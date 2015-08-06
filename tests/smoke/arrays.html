@@ -39,6 +39,11 @@
           <li><span>{{item.first}}</span></li>
         </template>
       </ul>
+      <ul class="splice_n_change">
+        <template  is="dom-repeat" items="{{organization.people_splice_n_change}}">
+          <li><span>{{item.first}}</span></li>
+        </template>
+      </ul>
 
     </template>
     <script>
@@ -71,6 +76,14 @@
         },
         {
           first: "Celine"
+        }
+      ],
+      people_splice_n_change: [
+        {
+          first: "Alice"
+        },
+        {
+          first: "Bob"
         }
       ]
     };
@@ -244,34 +257,26 @@ describe('dom-bind-notifier, when stamped from `dom-bind` with deep attribute an
         });
 
       });
-      it('update correct dom-repeat rows', function (done) {
-          model.people_splice.splice(0, model.people_splice.length);
+    });
+    describe('array items after splice,', function(){
+      it('should update correct dom-repeat rows', function (done) {
+          model.people_splice_n_change.splice(1, 0, { first: "Tomek" });
 
           setTimeout(function () {
-              model.people_splice.push({ first: "Tomek" });
-          }, 10);
-          
-          setTimeout(function () {
-              model.people_splice.push({ first: "Alice" });
-          }, 20);
+              model.people_splice_n_change[1].first = "Konstantin";
+              notifier.addEventListener("change", function listener(event){
+                // wait for asynchronous Polymer's _notifySplice
+                setTimeout(function(){
+                  expect(document.querySelector("ul.splice_n_change>li>span").innerHTML).to.equal("Alice");
+                  expect(document.querySelector("ul.splice_n_change>li:nth-child(2)>span").innerHTML).to.equal("Konstantin");
+                  expect(document.querySelector("ul.splice_n_change>li:nth-child(3)>span").innerHTML).to.equal("Bob");
+                  notifier.removeEventListener("change", listener);
+                  done();
+                });
+              });
+          });
 
           setTimeout(function () {
-              model.people_splice.splice(1, 0, { first: "John" });
-          }, 30);
-
-          setTimeout(function () {
-              model.people_splice.splice(1, 0, { first: "Sherlock" });
-          }, 40);
-          
-          setTimeout(function () {
-              model.people_splice[1].first = "Konstantin";
-          }, 50);
-
-          setTimeout(function () {
-              expect(document.querySelector("ul.splice>li>span").innerHTML).to.equal("Tomek");
-              expect(document.querySelector("ul.splice>li:nth-child(2)>span").innerHTML).to.equal("Konstantin");
-              expect(document.querySelector("ul.splice>li:nth-child(3)>span").innerHTML).to.equal("John");
-              expect(document.querySelector("ul.splice>li:nth-child(4)>span").innerHTML).to.equal("Alice");
           }, 100);
       });
     });
