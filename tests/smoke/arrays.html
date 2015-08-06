@@ -44,7 +44,15 @@
           <li><span>{{item.first}}</span></li>
         </template>
       </ul>
-
+      <ul class="people_nested">
+          <template is="dom-repeat" items="{{organization.people_nested}}">
+              <li>
+                  <template is="dom-repeat" items="{{item}}">
+                      <span>{{item}}</span>
+                  </template>
+              </li>
+          </template>
+      </ul>
     </template>
     <script>
     var model = {
@@ -85,6 +93,10 @@
         {
           first: "Bob"
         }
+      ],
+      people_nested: [
+          ["Sherlock", "Holmes"],
+          ["John", "Watson"]
       ]
     };
     var domBind = document.getElementById("arrays");
@@ -278,6 +290,19 @@ describe('dom-bind-notifier, when stamped from `dom-bind` with deep attribute an
 
           setTimeout(function () {
           }, 100);
+      });
+    });
+    describe('nested array items,', function () {
+      it('fire a change event, and update dom-bind', function (done) {
+        // change model
+        model.people_nested[0][0] = "John";
+        // check the event
+        // wait for Object.observe callback
+        notifier.addEventListener("change", function listener(event) {
+          expect(event.type).to.equal("change"); // It's kinda stupid, isn't it?
+          notifier.removeEventListener("change", listener);
+          done();
+        });
       });
     });
   });
