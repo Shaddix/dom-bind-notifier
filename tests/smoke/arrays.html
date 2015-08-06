@@ -1,0 +1,253 @@
+
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+
+    <script src="../../../webcomponentsjs/webcomponents.js"></script>
+    <script src="../../../web-component-tester/browser.js"></script>
+
+    <!-- Step 1: import the element to test -->
+    <link rel="import" href="../../dom-bind-notifier.html">
+  </head>
+  <body>
+
+    <template is="dom-bind" id="arrays">
+
+      <!-- Using Custom Elements -->
+        <dom-bind-notifier observed-object="{{organization}}" ref="arrays" path="organization" deep></dom-bind-notifier>
+
+      <h4><span>{{organization.name}}</span> people:</h4>
+      <ul class="">
+        <template  is="dom-repeat" items="{{organization.people}}">
+          <li><span>{{item.first}}</span></li>
+        </template>
+      </ul>
+      <ul class="push">
+        <template  is="dom-repeat" items="{{organization.people_push}}">
+          <li><span>{{item.first}}</span></li>
+        </template>
+      </ul>
+      <ul class="pop">
+        <template  is="dom-repeat" items="{{organization.people_pop}}">
+          <li><span>{{item.first}}</span></li>
+        </template>
+      </ul>
+      <ul class="splice">
+        <template  is="dom-repeat" items="{{organization.people_splice}}">
+          <li><span>{{item.first}}</span></li>
+        </template>
+      </ul>
+
+    </template>
+    <script>
+    var model = {
+      name: "Juicy",
+      people: [
+        {
+          first: "Tomek"
+        }
+      ],
+      people_push: [
+        {
+          first: "Tomek"
+        }
+      ],
+      people_pop: [
+        {
+          first: "Alice"
+        },
+        {
+          first: "Bob"
+        }
+      ],
+      people_splice: [
+        {
+          first: "Alice"
+        },
+        {
+          first: "Bob"
+        },
+        {
+          first: "Celine"
+        }
+      ]
+    };
+    var domBind = document.getElementById("arrays");
+    domBind.organization = model;
+    </script>
+
+    <script>
+describe('dom-bind-notifier, when stamped from `dom-bind` with deep attribute and bound to object w/ array', function() {
+  var notifier;
+  before(function(){
+    notifier = document.querySelector("dom-bind-notifier");
+  });
+  describe('should observe changes to ', function(){
+    describe('array items,', function(){
+      it('fire a change event, and update dom-bind', function (done) {
+        // change model
+        model.people[0].first = "tomalec";
+        // check the event
+        // wait for Object.observe callback
+        notifier.addEventListener("change", function listener(event){
+          expect( event.type ).to.equal("change"); // It's kinda stupid, isn't it?
+          expect( document.querySelector("ul>li>span").innerHTML ).to.equal("tomalec");
+          notifier.removeEventListener("change", listener);
+          done();
+        });
+
+      });
+    });
+    describe('array (push),', function(){
+      xit('fire a change event, and update dom-bind', function (done) {
+        // change model
+        model.people_push.push({first: "Alice"});
+        // check the event
+        // wait for Object.observe callback
+        notifier.addEventListener("change", function listener(event){
+          expect( event.type ).to.equal("change"); // It's kinda stupid, isn't it?
+          expect( document.querySelector("ul.push>li>span").innerHTML ).to.equal("Tomek");
+          expect( document.querySelector("ul.push>li:nth-child(2)>span") ).to.be.not.null;
+          expect( document.querySelector("ul.push>li:nth-child(2)>span").innerHTML ).to.equal("Alice");
+          notifier.removeEventListener("change", listener);
+          done();
+        });
+      });
+      it('fire a change event, and EVENTUALLY update dom-bind', function (done) {
+        // change model
+        model.people_push.push({first: "Alice"});
+        // check the event
+        // wait for Object.observe callback
+        notifier.addEventListener("change", function listener(event){
+          // wait for asynchronous Polymer's _notifySplice
+          setTimeout(function(){
+            expect( event.type ).to.equal("change"); // It's kinda stupid, isn't it?
+            expect( document.querySelector("ul.push>li>span").innerHTML ).to.equal("Tomek");
+            expect( document.querySelector("ul.push>li:nth-child(2)>span") ).to.be.not.null;
+            expect( document.querySelector("ul.push>li:nth-child(2)>span").innerHTML ).to.equal("Alice");
+            notifier.removeEventListener("change", listener);
+            done();
+          });
+        });
+
+      });
+
+      it('should start observing changes to objects added to array, and EVENTUALLY update dom-bind', function (done) {
+        // add item to the array
+        model.people_push.push({first: "Wizard"});
+        // make it async, to make sure it will come as separated change
+        setTimeout(function(){
+          model.people_push[model.people_push.length - 1].first += " from Oz";
+          // check the event
+          // wait for Object.observe callback
+          notifier.addEventListener("change", function listener(event){
+            // wait for asynchronous Polymer's _notifySplice
+            setTimeout(function(){
+              expect( document.querySelector("ul.push>li:nth-child("+model.people_push.length+")>span").innerHTML ).to.equal("Wizard from Oz");
+              notifier.removeEventListener("change", listener);
+              done();
+            });
+          });
+        },100);
+
+      });
+    });
+
+    describe('array (pop),', function(){
+      xit('fire a change event, and update dom-bind', function (done) {
+        // change model
+        model.people_pop.pop();
+        // check the event
+        // wait for Object.observe callback
+        notifier.addEventListener("change", function listener(event){
+          expect( event.type ).to.equal("change"); // It's kinda stupid, isn't it?
+          expect( document.querySelector("ul.pop>li>span").innerHTML ).to.equal("Alice");
+          expect( document.querySelectorAll("ul.pop>li") ).to.have.property("length").equal(1);
+          notifier.removeEventListener("change", listener);
+          done();
+        });
+      });
+      it('fire a change event, and EVENTUALLY update dom-bind', function (done) {
+        // change model
+        model.people_pop.pop();
+        // check the event
+        // wait for Object.observe callback
+        notifier.addEventListener("change", function listener(event){
+          // wait for asynchronous Polymer's _notifySplice
+          setTimeout(function(){
+            expect( event.type ).to.equal("change"); // It's kinda stupid, isn't it?
+            expect( document.querySelector("ul.pop>li>span").innerHTML ).to.equal("Alice");
+            expect( document.querySelectorAll("ul.pop>li") ).to.have.property("length").equal(1);
+            notifier.removeEventListener("change", listener);
+            done();
+          });
+        });
+
+      });
+      it('should stop observing changes to removed objects, and do NOT fire a change even', function (done) {
+        // change model
+        var remocedObj = model.people_pop.pop();
+        // make it async, to make sure it will come as separated change
+        setTimeout(function(){
+          var numberOfCallsForChangeEvent = 0;
+          // check the event
+          // wait for Object.observe callback
+          function listener(){
+            numberOfCallsForChangeEvent++;
+          }
+          notifier.addEventListener("change", listener);
+          remocedObj.first = "removed Alice";
+          // wait for any event to be called
+          setTimeout(function(){
+            expect( numberOfCallsForChangeEvent ).to.equal(0);
+            notifier.removeEventListener("change", listener);
+            done();
+          }, 1000);
+        },200);
+      });
+    });
+
+    describe('array (splice),', function(){
+      xit('fire a change event, and update dom-bind', function (done) {
+        // change model
+        model.people_splice.splice(1, 1, {first: "Tomek"});
+        // check the event
+        // wait for Object.observe callback
+        notifier.addEventListener("change", function listener(event){
+          expect( event.type ).to.equal("change"); // It's kinda stupid, isn't it?
+          expect( document.querySelector("ul.splice>li>span").innerHTML ).to.equal("Alice");
+          expect( document.querySelector("ul.splice>li:nth-child(2)>span") ).to.have.property("innerHTML").equal("Tomek");
+          expect( document.querySelector("ul.splice>li:nth-child(3)>span").innerHTML ).to.equal("Celine");
+          expect( document.querySelectorAll("ul.splice>li") ).to.have.property("length").equal(3);
+          notifier.removeEventListener("change", listener);
+          done();
+        });
+      });
+      it('fire a change event, and EVENTUALLY update dom-bind', function (done) {
+        // change model
+        model.people_splice.splice(1, 1, {first: "Tomek"});
+        // check the event
+        // wait for Object.observe callback
+        notifier.addEventListener("change", function listener(event){
+          // wait for asynchronous Polymer's _notifySplice
+          setTimeout(function(){
+            expect( event.type ).to.equal("change"); // It's kinda stupid, isn't it?
+            expect( document.querySelector("ul.splice>li>span").innerHTML ).to.equal("Alice");
+            expect( document.querySelector("ul.splice>li:nth-child(2)>span") ).to.have.property("innerHTML").equal("Tomek");
+            expect( document.querySelector("ul.splice>li:nth-child(3)>span").innerHTML ).to.equal("Celine");
+            expect( document.querySelectorAll("ul.splice>li") ).to.have.property("length").equal(3);
+            notifier.removeEventListener("change", listener);
+            done();
+          });
+        });
+
+      });
+    });
+  });
+});
+    </script>
+
+  </body>
+</html>
