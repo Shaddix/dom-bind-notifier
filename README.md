@@ -38,11 +38,18 @@ Or [download as ZIP](https://github.com/Juicy/dom-bind-notifier/archive/master.z
 
 ## Options
 
-Attribute    | Options     | Default      | Description
----          | ---         | ---          | ---
-`bind`       | *Object*    |              | Object to bind to
-`ref`        | *String*    |              | Id of `dom-bind` element to notify, if not given firstChild will be used
+Attribute         | Options   | Default | Description
+---               | ---       | ---     | ---
+`observed-object` | *Object*  |         | Object to bind to
+`ref`             | *String*  |         | Id of `dom-bind` element to notify.
+`path`            | *String*  |         | Path of observed object in scope of `ref`erenced `dom-bind`
+`deep`            | *Boolean* | `false` | Should we observe objects deeply
 
+## Events
+
+Event    | Details                                       | Description
+---      | ---                                           | ---
+`change` | *Array* of changes in `Object.observe` format | Triggers when `dom-bind` gets notified with some changes
 
 ## Contributing
 
