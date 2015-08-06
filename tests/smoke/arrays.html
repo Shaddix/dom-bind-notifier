@@ -244,6 +244,36 @@ describe('dom-bind-notifier, when stamped from `dom-bind` with deep attribute an
         });
 
       });
+      it('update correct dom-repeat rows', function (done) {
+          model.people_splice.splice(0, model.people_splice.length);
+
+          setTimeout(function () {
+              model.people_splice.push({ first: "Tomek" });
+          }, 10);
+          
+          setTimeout(function () {
+              model.people_splice.push({ first: "Alice" });
+          }, 20);
+
+          setTimeout(function () {
+              model.people_splice.splice(1, 0, { first: "John" });
+          }, 30);
+
+          setTimeout(function () {
+              model.people_splice.splice(1, 0, { first: "Sherlock" });
+          }, 40);
+          
+          setTimeout(function () {
+              model.people_splice[1].first = "Konstantin";
+          }, 50);
+
+          setTimeout(function () {
+              expect(document.querySelector("ul.splice>li>span").innerHTML).to.equal("Tomek");
+              expect(document.querySelector("ul.splice>li:nth-child(2)>span").innerHTML).to.equal("Konstantin");
+              expect(document.querySelector("ul.splice>li:nth-child(3)>span").innerHTML).to.equal("John");
+              expect(document.querySelector("ul.splice>li:nth-child(4)>span").innerHTML).to.equal("Alice");
+          }, 100);
+      });
     });
   });
 });
