@@ -17,7 +17,7 @@
     "preview.png"
   ],
   "dependencies": {
-    "polymer": "Polymer/polymer#>=1.0.8"
+    "polymer": "Polymer/polymer#>=1.0.9"
   },
   "devDependencies": {
     "web-component-tester": "~3.3.6"

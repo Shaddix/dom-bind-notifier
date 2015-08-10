@@ -300,6 +300,7 @@ describe('dom-bind-notifier, when stamped from `dom-bind` with deep attribute an
         // wait for Object.observe callback
         notifier.addEventListener("change", function listener(event) {
           expect(event.type).to.equal("change"); // It's kinda stupid, isn't it?
+          expect(document.querySelector("ul.people_nested>li:nth-child(1)>span").innerHTML).to.equal("John");
           notifier.removeEventListener("change", listener);
           done();
         });
