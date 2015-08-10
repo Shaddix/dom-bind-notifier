@@ -71,7 +71,7 @@ You can now get same behavior in Polymer 1.0.x with:
     <label>Company name <input value="{{model.name::input}}"></label>
     <h3>Employee list:</h3>
     <template is="dom-repeat" items="{{model.employees}}">
-        <li><template is="dom-if" if="{{item.htmlDev}}">★</template><input type="text" value="{{item.firstName::input}}"/></li>
+        <li><template is="dom-if" if="{{item.htmlDev}}" restamp>★</template><input type="text" value="{{item.firstName::input}}"/></li>
     </template>
 </template>
 <script>
