@@ -230,7 +230,8 @@ Description: Adds good old Object.observe to Polymer 1.0 template binding (dom-b
     element.template.notifyPath(
       translatePathForPolymerNotifyPath( // required for seems-to-be Polymer bug
         element.path + getPath(element.observedObject, change.object) + '.' + change.name,
-        element.template
+        element.template,
+        change.oldValue
       ),
       change.object[change.name]
     );
@@ -244,9 +245,10 @@ Description: Adds good old Object.observe to Polymer 1.0 template binding (dom-b
    *
    * @param  {String} path dot separated JSON path to translate
    * @param  {Object} prop object in question
+   * @param  {any} [oldValue] old value for updates of last array item
    * @return {String}      translated path
    */
-  function translatePathForPolymerNotifyPath(path, prop){
+  function translatePathForPolymerNotifyPath(path, prop, oldValue){
     var array;
     var parts = path.split('.');
     var last = parts[parts.length-1];
@@ -265,7 +267,7 @@ Description: Adds good old Object.observe to Polymer 1.0 template binding (dom-b
       if (array && (parseInt(last) == last)) {
         var coll = Polymer.Collection.get(array);
         var old = prop[last];
-        var key = coll.getKey(old);
+        var key = coll.getKey(oldValue);
         parts[i] = key;
       }
       //prop[last] = value;
