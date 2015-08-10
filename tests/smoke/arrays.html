@@ -56,6 +56,11 @@
       </ul>
       <ul class="splice_n_change">
         <template  is="dom-repeat" items="{{organization.people_splice_n_change}}">
+          <li>{{item.first}}</li>
+        </template>
+      </ul>
+      <ul class="primitive_splice_n_change">
+        <template  is="dom-repeat" items="{{organization.primitive_splice_n_change}}">
           <li>{{item}}</li>
         </template>
       </ul>
@@ -106,7 +111,8 @@
           first: "Celine"
         }
       ],
-      people_splice_n_change: ["Alice", "Bob"],
+      people_splice_n_change: [{first:"Alice"}, {first:"Bob"}],
+      primitive_splice_n_change: ["A", "B"],
       people_nested: [
           ["Sherlock", "Holmes"],
           ["John", "Watson"]
@@ -353,26 +359,42 @@ describe('dom-bind-notifier, when stamped from `dom-bind` with deep attribute an
 
       });
     });
-    describe('array items changed after splice,', function(){
-      it('should update correct dom-repeat rows', function (done) {
-          model.people_splice_n_change.splice(1, 0, "Tomek" );
+    describe('array items changed after splice, should update correct dom-repeat rows', function(){
+      it('for nested objects', function (done) {
+          model.people_splice_n_change.splice(1, 0, {first: "Tomek" });
 
           setTimeout(function () {
-              model.people_splice_n_change[1] = "Konstantin";
+              model.people_splice_n_change[1].first = "Konstantin";
               notifier.addEventListener("change", function listener(event){
                 // wait for asynchronous Polymer's _notifySplice
+                notifier.removeEventListener("change", listener);
                 setTimeout(function(){
-                  notifier.removeEventListener("change", listener);
                   expect(document.querySelector("ul.splice_n_change>li").innerHTML).to.equal("Alice");
                   expect(document.querySelector("ul.splice_n_change>li:nth-child(2)").innerHTML).to.equal("Konstantin");
                   expect(document.querySelector("ul.splice_n_change>li:nth-child(3)").innerHTML).to.equal("Bob");
                   done();
-                });
+                },100);
               });
-          });
+          },100);
+
+      });
+      it('for primitive values', function (done) {
+          model.primitive_splice_n_change.splice(1, 0, "T" );
 
           setTimeout(function () {
-          }, 100);
+              model.primitive_splice_n_change[1] = "K";
+              notifier.addEventListener("change", function listener(event){
+                // wait for asynchronous Polymer's _notifySplice
+                notifier.removeEventListener("change", listener);
+                setTimeout(function(){
+                  expect(document.querySelector("ul.primitive_splice_n_change>li").innerHTML).to.equal("A");
+                  expect(document.querySelector("ul.primitive_splice_n_change>li:nth-child(2)").innerHTML).to.equal("K");
+                  expect(document.querySelector("ul.primitive_splice_n_change>li:nth-child(3)").innerHTML).to.equal("B");
+                  done();
+                },100);
+              });
+          },100);
+
       });
     });
     describe('nested array items,', function () {

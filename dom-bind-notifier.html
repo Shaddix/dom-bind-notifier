@@ -78,15 +78,11 @@ Description: Adds good old Object.observe to Polymer 1.0 template binding (dom-b
         template = this.firstChildElement;
       }
       this.template = template;
-      // debugger
-      // observe changes
     },
     _observer: function(arr){
       var change;
       for(var changeNo = 0; changeNo < arr.length; changeNo++){
-        change = arr[changeNo];
-        this.template.notifyPath(this.path + getPath(this.observedObject, change.object) + '.' + change.name, change.object[change.name]);
-        //this._notifySplice(array, path, splice.index, splice.addedCount, splice.removed);
+        notifyTemplate(this, arr[changeNo]);
       }
       this.fire("change", arr)
     },
@@ -114,7 +110,7 @@ Description: Adds good old Object.observe to Polymer 1.0 template binding (dom-b
             }
           break;
           case "update":
-            this.template.notifyPath(this.path + getPath(this.observedObject, change.object) + '.' + change.name, change.object[change.name]);
+            notifyTemplate(this, change);
             // observe new nodes
             if( this.deep ){
               this.unobserve(change.oldValue);
@@ -122,14 +118,14 @@ Description: Adds good old Object.observe to Polymer 1.0 template binding (dom-b
             }
           break;
           case "delete":
-            this.template.notifyPath(this.path + getPath(this.observedObject, change.object) + '.' + change.name, change.object[change.name]);
+            notifyTemplate(this, change);
             // observe new nodes
             if( this.deep ){
               this.unobserve(change.oldValue);
             }
           break;
           case "add":
-            this.template.notifyPath(this.path + getPath(this.observedObject, change.object) + '.' + change.name, change.object[change.name]);
+            notifyTemplate(this, change);
             // observe new nodes
             if( this.deep ){
               this.observe(change.object[ addedCount + change.index ]);
@@ -225,6 +221,59 @@ Description: Adds good old Object.observe to Polymer 1.0 template binding (dom-b
       }
       return path;
   }
+  /**
+   * Helper function to DRY notifying Polymer Template with observed change
+   * @param  {dom-bind-notifier} element
+   * @param  {Object} change  change in Object.observe format
+   */
+  function notifyTemplate(element, change){
+    element.template.notifyPath(
+      translatePathForPolymerNotifyPath( // required for seems-to-be Polymer bug
+        element.path + getPath(element.observedObject, change.object) + '.' + change.name,
+        element.template
+      ),
+      change.object[change.name]
+    );
+  }
+  /**
+   * Workaround for lack of consistency in Polymer's API
+   * Polymer.Base#notifyPath accept different "path" than other methods
+   * for notifyPath path shouls use Collection keys instead of array indexes
+   *
+   * This function translate JSON path into Polymer's internal path
+   *
+   * @param  {String} path dot separated JSON path to translate
+   * @param  {Object} prop object in question
+   * @return {String}      translated path
+   */
+  function translatePathForPolymerNotifyPath(path, prop){
+    var array;
+    var parts = path.split('.');
+    var last = parts[parts.length-1];
+    if (parts.length > 1) {
+      for (var i=0; i<parts.length-1; i++) {
+        var part = parts[i];
+        prop = prop[part];
+        if (array && (parseInt(part) == part)) {
+          parts[i] = Polymer.Collection.get(array).getKey(prop);
+        }
+        if (!prop) {
+          return;
+        }
+        array = _isArray(prop) ? prop : null;
+      }
+      if (array && (parseInt(last) == last)) {
+        var coll = Polymer.Collection.get(array);
+        var old = prop[last];
+        var key = coll.getKey(old);
+        parts[i] = key;
+      }
+      //prop[last] = value;
+    }
+    return parts.join('.');
+  }
+
+
   var _isArray;
   if (Array.isArray) {
     _isArray = Array.isArray;
@@ -234,30 +283,6 @@ Description: Adds good old Object.observe to Polymer 1.0 template binding (dom-b
     };
   }
 
-  var observeOps = {
-      add: function (patches, path) {
-          var patch = {
-              op: "add",
-              path: path + escapePathComponent(this.name),
-              value: this.object[this.name] };
-          patches.push(patch);
-      },
-      'delete': function (patches, path) {
-          var patch = {
-              op: "remove",
-              path: path + escapePathComponent(this.name)
-          };
-          patches.push(patch);
-      },
-      update: function (patches, path) {
-          var patch = {
-              op: "replace",
-              path: path + escapePathComponent(this.name),
-              value: this.object[this.name]
-          };
-          patches.push(patch);
-      }
-  };
 }());
 </script>
 
