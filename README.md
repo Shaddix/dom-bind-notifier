@@ -35,6 +35,9 @@ Or [download as ZIP](https://github.com/Juicy/dom-bind-notifier/archive/gh-pages
     ```html
     <dom-bind-notifier ref="domBindId" observed-object="{{myObj}}" path="myObj" deep></dom-bind-notifier>
     ```
+## Object.observe
+
+Please note, that we use [`Object.observe` & `Array.observe`](http://wiki.ecmascript.org/doku.php?id=harmony:observe), so if your environment does not support it, you will need a shim.
 
 ## Options
 

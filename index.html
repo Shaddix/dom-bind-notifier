@@ -18,7 +18,12 @@
     </style>
 </head>
 <body class="markdown-body">
-  <h1>&lt;dom-bind-notifier&gt;</h1>
+  <h1>
+    &lt;dom-bind-notifier&gt;
+    <iframe src="http://ghbtns.com/github-btn.html?user=juicy&repo=dom-bind-notifier&type=watch&count=true&size=medium"
+    allowtransparency="true" frameborder="0" scrolling="0" width="90" height="20"></iframe>
+    <iframe src="http://ghbtns.com/github-btn.html?user=juicy&repo=dom-bind-notifier&type=fork&count=true&size=medium"
+    allowtransparency="true" frameborder="0" scrolling="0" width="90" height="20"></iframe></h1>
   <blockquote>
     <p>
       Adds good old Object.observe to Polymer 1.0 template binding (dom-bind)
@@ -163,7 +168,9 @@
       </script>
     </div>
     <div>
-      <button onclick="arrays.people.push({first:'New', last:'Guy'});">Click to add a new guy to <code>arrays.people</code></button>
+      <button onclick="arrays.people.push({first:'New', last:'Guy'});">Click to <code>push</code> a new guy to <code>arrays.people</code></button>
+      <button onclick="arrays.people.splice(1,0,{first:'Some', last:'One'});">Click to <code>splice</code> someone in the middle of<code>arrays.people</code></button>
+      <button onclick="arrays.people[1].first= 'An Apple';">Click to change <code>arrays.people[1].first</code>to an apple</button>
       <button onclick="arrays.people.shift();">Click to shift a person from <code>arrays.people</code></button>
     </div>
   </div>
