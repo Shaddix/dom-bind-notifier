@@ -2,6 +2,11 @@
 
 > Adds good old Object.observe to Polymer 1.0 template binding (dom-bind)
 
+So you no longer have to worry about notifying your elements.
+With single element, you get real TWO-way data-binding for HTML Templates.
+DOM stays in sync with any JS object you provide.
+
+
 ## Demo
 
 [Check it live!](http://Juicy.github.io/dom-bind-notifier)
@@ -14,7 +19,7 @@ Install the component using [Bower](http://bower.io/):
 $ bower install dom-bind-notifier --save
 ```
 
-Or [download as ZIP](https://github.com/Juicy/dom-bind-notifier/archive/gh-pages.zip).
+Or [download as ZIP](https://github.com/Juicy/dom-bind-notifier/archive/master.zip).
 
 ## Usage
 
@@ -33,7 +38,10 @@ Or [download as ZIP](https://github.com/Juicy/dom-bind-notifier/archive/gh-pages
 3. Start using it!
 
     ```html
-    <dom-bind-notifier ref="domBindId" observed-object="{{myObj}}" path="myObj" deep></dom-bind-notifier>
+    <template is="dom-bind" id="tId">
+      <dom-bind-notifier ref="tId" observed-object="{{myObj}}" path="myObj" deep></dom-bind-notifier>
+      <!-- your magic goes here -->
+    </template>
     ```
 ## Object.observe
 
