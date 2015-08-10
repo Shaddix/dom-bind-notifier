@@ -95,6 +95,10 @@ Description: Adds good old Object.observe to Polymer 1.0 template binding (dom-b
       var addedCount, removedCount;
       for(var changeNo = 0; changeNo < arr.length; changeNo++){
         change = arr[changeNo];
+        // do nothing for Polymers bloatware
+        if(change.name === "splices"){
+          continue;
+        }
         switch(change.type){
           // TODO: add support for changes to array propertires add, update, delete
           case "splice":
@@ -107,6 +111,28 @@ Description: Adds good old Object.observe to Polymer 1.0 template binding (dom-b
               for( removedCount = 0; removedCount < change.removed.length; removedCount++){
                 this.unobserve(change.removed[ removedCount ]);
               }
+            }
+          break;
+          case "update":
+            this.template.notifyPath(this.path + getPath(this.observedObject, change.object) + '.' + change.name, change.object[change.name]);
+            // observe new nodes
+            if( this.deep ){
+              this.unobserve(change.oldValue);
+              this.observe(change.object[ addedCount + change.index ]);
+            }
+          break;
+          case "delete":
+            this.template.notifyPath(this.path + getPath(this.observedObject, change.object) + '.' + change.name, change.object[change.name]);
+            // observe new nodes
+            if( this.deep ){
+              this.unobserve(change.oldValue);
+            }
+          break;
+          case "add":
+            this.template.notifyPath(this.path + getPath(this.observedObject, change.object) + '.' + change.name, change.object[change.name]);
+            // observe new nodes
+            if( this.deep ){
+              this.observe(change.object[ addedCount + change.index ]);
             }
           break;
         }
@@ -166,7 +192,7 @@ Description: Adds good old Object.observe to Polymer 1.0 template binding (dom-b
         if (obj.hasOwnProperty(key)) {
             var v = obj[key];
             if (v && typeof (v) === "object") {
-                deepunobserve(v, observer, observer_array);
+                deepUnobserve(v, observer, observer_array);
             }
         }
     }
