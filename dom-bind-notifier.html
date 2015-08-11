@@ -141,7 +141,7 @@ Description: Adds good old Object.observe to Polymer 1.0 template binding (dom-b
         return false;
       }
       return this.deep ?
-        deepUnobserve(obj, this.observer) :
+        deepUnobserve(obj, this.observer, this.observer_array) :
         _isArray( obj ) ?
           Array.unobserve(obj, this.observer_array) :
           Object.unobserve(obj, this.observer);
@@ -177,7 +177,7 @@ Description: Adds good old Object.observe to Polymer 1.0 template binding (dom-b
     }
     return observer;
   }
-  function deepUnobserve(obj, observer) {
+  function deepUnobserve(obj, observer, observer_array) {
     if(_isArray(obj)){
       Array.unobserve(obj, observer_array);
     } else {
