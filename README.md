@@ -1,6 +1,6 @@
 # &lt;dom-bind-notifier&gt;
 
-> Adds good old Object.observe to Polymer 1.0 template binding (dom-bind)
+> Adds good old Object.observe to Polymer 1.x template binding (dom-bind)
 
 So you no longer have to worry about notifying your elements.
 With single element, you get real TWO-way data-binding for HTML Templates.
