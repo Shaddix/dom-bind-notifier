@@ -1,0 +1,58 @@
+
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+
+    <script src="../../../webcomponentsjs/webcomponents.js"></script>
+    <script src="../../../web-component-tester/browser.js"></script>
+
+    <!-- Step 1: import the element to test -->
+    <link rel="import" href="../../dom-bind-notifier.html">
+  </head>
+  <body>
+
+    <template is="dom-bind" id="sibling">
+      <h3>{{repo.name}}</h3>
+      by <span>{{repo.author.first}}</span>
+    </template>
+    <dom-bind-notifier path="repo" deep></dom-bind-notifier>
+    <script>
+    var model = {
+      name: "<juicy-dom-notifier>",
+      author: {
+        first: "Tomek",
+        last: "Wytrębowicz"
+      }
+    };
+    var domBind = document.getElementById("sibling");
+    domBind.repo = model;
+    </script>
+
+    <script>
+    var notifier = document.querySelector("dom-bind-notifier");
+describe('dom-bind-notifier, when created as next sibling element of `dom-bind`', function() {
+    it('should attach to it, and object given as `<dom-bind>.get(path)`', function(){
+        expect(notifier).to.have.property('template').equal(domBind);
+        expect(notifier).to.have.property('observedObject').equal(model);
+    });
+  describe('should observe changes to it,', function(){
+    it('fire a change event, and update dom-bind', function (done) {
+      // change model
+      model.author.first = "tomalec";
+      // check the event
+      // wait for Object.observe callback
+      notifier.addEventListener("change", function(event){
+        expect( event.type ).to.equal("change"); // It's kinda stupid, isn't it?
+        expect( document.querySelector("span").innerHTML ).to.equal("tomalec");
+        done();
+      });
+
+    });
+  });
+});
+    </script>
+
+  </body>
+</html>
