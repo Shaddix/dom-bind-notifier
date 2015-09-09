@@ -78,14 +78,13 @@ Description: Adds good old Object.observe to Polymer 1.0 template binding (dom-b
           }
         }
       } else {
-        template = this.previousElementSibling;
+        template = this.nextElementSibling;
         while(template && template.tagName != "TEMPLATE"){
-          template = template.previousElementSibling;
+          template = template.nextElementSibling;
         }
         if(!template){
-            throw "There is no previous `<template>` sibling.";
+            throw "There is no next `<template>` sibling.";
         }
-        this.observedObject = template.get(this.path);
       }
       this.template = template;
     },
