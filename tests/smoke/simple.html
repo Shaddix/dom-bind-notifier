@@ -37,7 +37,9 @@ describe('dom-bind-notifier, when stamped from `dom-bind` bound to shallow objec
       model.name = "Polymer";
       // check the event
       // wait for Object.observe callback
-      document.querySelector("dom-bind-notifier").addEventListener("change", function(event){
+      var notifier = document.querySelector("dom-bind-notifier");
+      notifier.addEventListener("change", function listener(event){
+        notifier.removeEventListener("change", listener);
         expect( event.type ).to.equal("change"); // It's kinda stupid, isn't it?
         expect( document.querySelector("h4>span").innerHTML ).to.equal("Polymer");
         done();
