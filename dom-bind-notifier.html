@@ -165,7 +165,7 @@ Description: Adds good old Object.observe to Polymer 1.0 template binding (dom-b
     },
     unobserve: function(obj){
       obj = typeof obj!== "undefined" ? obj : this.observedObject;
-      if(!(typeof obj === "object")){
+      if(!(typeof obj === "object") || obj === null){
         return false;
       }
       return this.deep ?
