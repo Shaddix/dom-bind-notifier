@@ -13,15 +13,30 @@
   </head>
   <body>
 
-    <template is="dom-bind" id="deep">
+  <dom-bind-notifier ref="deep" path="repo" deep></dom-bind-notifier>
+  <dom-module id="cstm-elt">
+      <script>
+      Polymer({
+          is:"cstm-elt",
+          properties:{
+              repo:{
+                  type:Object,
+                  notify: true
+              }
+          }
+      });
+      </script>
+    <template is="dom-bind" id="deep" >
 
       <!-- Using Custom Elements -->
-        <dom-bind-notifier observed-object="{{repo}}" ref="deep" path="repo" deep></dom-bind-notifier>
-
+<span>{{repo}}</span>
       <h3>{{repo.name}}</h3>
       by <span>{{repo.author.first}}</span>
 
     </template>
+
+</dom-module>
+<cstm-elt id="elt"></cstm-elt>
     <script>
     var model = {
       name: "<juicy-dom-notifier>",
@@ -30,30 +45,35 @@
         last: "Wytrębowicz"
       }
     };
-    var domBind = document.getElementById("deep");
-    domBind.repo = model;
+    var domBind = document.getElementById("elt");
+    // domBind.repo = model;
+    domBind.addEventListener("repo-changed", function(){
+        alert(1);
+    });
+
+    domBind.set("repo", {});
     </script>
 
     <script>
-describe('dom-bind-notifier, when stamped from `dom-bind` with deep attribute and bound to object', function() {
-
-  describe('should observe changes to it,', function(){
-    it('fire a change event, and update dom-bind', function (done) {
-      // change model
-      model.author.first = "tomalec";
-      // check the event
-      // wait for Object.observe callback
-      var notifier = document.querySelector("dom-bind-notifier");
-      notifier.addEventListener("change", function listener(event){
-        notifier.removeEventListener("change", listener);
-        expect( event.type ).to.equal("change"); // It's kinda stupid, isn't it?
-        expect( document.querySelector("span").innerHTML ).to.equal("tomalec");
-        done();
-      });
-
-    });
-  });
-});
+// describe('dom-bind-notifier, when stamped from `dom-bind` with deep attribute and bound to object', function() {
+//
+//   describe('should observe changes to it,', function(){
+//     it('fire a change event, and update dom-bind', function (done) {
+//       // change model
+//       model.author.first = "tomalec";
+//       // check the event
+//       // wait for Object.observe callback
+//       var notifier = document.querySelector("dom-bind-notifier");
+//       notifier.addEventListener("change", function listener(event){
+//         notifier.removeEventListener("change", listener);
+//         expect( event.type ).to.equal("change"); // It's kinda stupid, isn't it?
+//         expect( document.querySelector("span").innerHTML ).to.equal("tomalec");
+//         done();
+//       });
+//
+//     });
+//   });
+// });
     </script>
 
   </body>
