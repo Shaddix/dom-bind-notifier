@@ -42,6 +42,15 @@
 
         var domBind = document.getElementById("deep_array");
         domBind.model = model;
+        //
+        // setTimeout(function(){
+        //     model.path_to.array[0].nested_array[0] = {prop: "firstChange"};
+        //     domBind.notifyPath("model.path_to.array.0.nested_array.0", model.path_to.array[0].nested_array[0] );
+        //     setTimeout(function(){
+        //         model.path_to.array[0].nested_array[0] = {prop: "firstChange"};
+        //         domBind.notifyPath("model.path_to.array.0.nested_array.0", model.path_to.array[0].nested_array[0] );
+        //     },500);
+        // },500);
     </script>
 
     <script>
@@ -51,25 +60,31 @@ describe('dom-bind-notifier, when stamped from `dom-bind` with deep attribute an
         notifier = document.querySelector("dom-bind-notifier");
     });
     describe('should notify Polymer binding so that changing nested array element will me replaced after each model replace', function(){
-        it('fire a change event, and update dom-bind', function (done) {
+        it('fire a change event, and EVENTUALLY update dom-bind', function (done) {
             // change model
             model.path_to.array[0].nested_array[0] = {prop: "firstChange"};
             // check the event
             // wait for Object.observe callback
             notifier.addEventListener("change", function listener(event){
                 notifier.removeEventListener("change", listener);
-                expect( event.type ).to.equal("change"); // It's kinda stupid, isn't it?
-                expect( document.querySelector("#nestedArrayDiv>span:first-child").innerHTML ).to.equal("firstChange");
+                // wait for asynchronous Polymer's _notifySplice
+                setTimeout(function(){
+                    expect( event.type ).to.equal("change"); // It's kinda stupid, isn't it?
+                    expect( document.querySelector("#nestedArrayDiv>span:first-child").innerHTML ).to.equal("firstChange");
                     // change model
                     model.path_to.array[0].nested_array[0] = {prop: "secondChange"};
                     // check the event
                     // wait for Object.observe callback
-                    notifier.addEventListener("change", function listener(event){
-                        notifier.removeEventListener("change", listener);
-                        expect( event.type ).to.equal("change"); // It's kinda stupid, isn't it?
-                        expect( document.querySelector("#nestedArrayDiv>span:first-child").innerHTML ).to.equal("secondChange");
-                        done();
+                    notifier.addEventListener("change", function listener2(event){
+                        notifier.removeEventListener("change", listener2);
+                        // wait for asynchronous Polymer's _notifySplice
+                        setTimeout(function(){
+                            expect( event.type ).to.equal("change"); // It's kinda stupid, isn't it?
+                            expect( document.querySelector("#nestedArrayDiv>span:first-child").innerHTML ).to.equal("secondChange");
+                            done();
+                        });
                     });
+                },100);
             });
 
         });

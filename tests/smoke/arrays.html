@@ -132,7 +132,7 @@ describe('dom-bind-notifier, when stamped from `dom-bind` with deep attribute an
   });
   describe('should observe changes to ', function(){
     describe('array items,', function(){
-      it('fire a change event, and update dom-bind', function (done) {
+      xit('fire a change event, and update dom-bind', function (done) {
         // change model
         model.primitive_people[0] = "Homo erectus";
         // check the event
@@ -142,6 +142,22 @@ describe('dom-bind-notifier, when stamped from `dom-bind` with deep attribute an
           expect( event.type ).to.equal("change"); // It's kinda stupid, isn't it?
           expect( document.querySelector("ul.primitive_people>li>span").innerHTML ).to.equal("Homo erectus");
           done();
+        });
+
+      });
+      it('fire a change event, and EVENTUALLY update dom-bind', function (done) {
+        // change model
+        model.primitive_people[0] = "Homo erectus";
+        // check the event
+        // wait for Object.observe callback
+        notifier.addEventListener("change", function listener(event){
+          notifier.removeEventListener("change", listener);
+          // wait for asynchronous Polymer's _notifySplice
+          setTimeout(function(){
+              expect( event.type ).to.equal("change"); // It's kinda stupid, isn't it?
+              expect( document.querySelector("ul.primitive_people>li>span").innerHTML ).to.equal("Homo erectus");
+              done();
+          });
         });
 
       });
@@ -398,7 +414,7 @@ describe('dom-bind-notifier, when stamped from `dom-bind` with deep attribute an
       });
     });
     describe('nested array items,', function () {
-      it('fire a change event, and update dom-bind', function (done) {
+      xit('fire a change event, and update dom-bind', function (done) {
         // change model
         model.people_nested[0][0] = "John";
         // check the event
@@ -409,6 +425,21 @@ describe('dom-bind-notifier, when stamped from `dom-bind` with deep attribute an
           expect(document.querySelector("ul.people_nested>li:nth-child(1)>span").innerHTML).to.equal("John");
           done();
         });
+      });
+      it('fire a change event, and EVENTUALLY update dom-bind', function (done) {
+        // change model
+        model.people_nested[0][0] = "John";
+        // check the event
+        // wait for Object.observe callback
+        notifier.addEventListener("change", function listener(event) {
+          notifier.removeEventListener("change", listener);
+          // wait for asynchronous Polymer's _notifySplice
+          setTimeout(function(){
+              expect(event.type).to.equal("change"); // It's kinda stupid, isn't it?
+              expect(document.querySelector("ul.people_nested>li:nth-child(1)>span").innerHTML).to.equal("John");
+              done();
+            });
+          });
       });
     });
   });
