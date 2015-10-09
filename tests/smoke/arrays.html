@@ -160,10 +160,11 @@ describe('dom-bind-notifier, when stamped from `dom-bind` with deep attribute an
           notifier.removeEventListener("change", listener);
           // wait for asynchronous Polymer's _notifySplice
           setTimeout(function(){
+            debugger
               expect( event.type ).to.equal("change"); // It's kinda stupid, isn't it?
               expect( document.querySelector("ul.primitive_people>li>span").innerHTML ).to.equal("Homo erectus");
               done();
-          });
+          },100);
         });
 
       });
@@ -218,7 +219,7 @@ describe('dom-bind-notifier, when stamped from `dom-bind` with deep attribute an
             expect( event.type ).to.equal("change"); // It's kinda stupid, isn't it?
             expect( document.querySelector("ul.people_properties>li.add") ).to.be.not.null;
             done();
-          });
+          },100);
         });
       });
       it('when deleting custom property (dom-if restamps asynchronously)', function (done) {
@@ -232,7 +233,7 @@ describe('dom-bind-notifier, when stamped from `dom-bind` with deep attribute an
             expect( event.type ).to.equal("change"); // It's kinda stupid, isn't it?
             expect( document.querySelector("ul.people_properties>li.delete") ).to.be.null;
             done();
-          });
+          },100);
         });
       });
     });
@@ -265,7 +266,7 @@ describe('dom-bind-notifier, when stamped from `dom-bind` with deep attribute an
             expect( document.querySelector("ul.push>li:nth-child(2)>span") ).to.be.not.null;
             expect( document.querySelector("ul.push>li:nth-child(2)>span").innerHTML ).to.equal("Alice");
             done();
-          });
+          },100);
         });
 
       });
@@ -284,7 +285,7 @@ describe('dom-bind-notifier, when stamped from `dom-bind` with deep attribute an
             setTimeout(function(){
               expect( document.querySelector("ul.push>li:nth-child("+model.people_push.length+")>span").innerHTML ).to.equal("Wizard from Oz");
               done();
-            });
+            },100);
           });
         },100);
 
@@ -318,7 +319,7 @@ describe('dom-bind-notifier, when stamped from `dom-bind` with deep attribute an
             expect( document.querySelector("ul.pop>li>span").innerHTML ).to.equal("Alice");
             expect( document.querySelectorAll("ul.pop>li") ).to.have.property("length").equal(1);
             done();
-          });
+          },100);
         });
 
       });
@@ -376,7 +377,7 @@ describe('dom-bind-notifier, when stamped from `dom-bind` with deep attribute an
             expect( document.querySelector("ul.splice>li:nth-child(3)>span").innerHTML ).to.equal("Celine");
             expect( document.querySelectorAll("ul.splice>li") ).to.have.property("length").equal(3);
             done();
-          });
+          },100);
         });
 
       });
@@ -444,7 +445,7 @@ describe('dom-bind-notifier, when stamped from `dom-bind` with deep attribute an
               expect(event.type).to.equal("change"); // It's kinda stupid, isn't it?
               expect(document.querySelector("ul.people_nested>li:nth-child(1)>span").innerHTML).to.equal("John");
               done();
-            });
+            },100);
           });
       });
     });
