@@ -5,7 +5,9 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
 
+    <!-- Importing Web Component's Polyfill -->
     <script src="../../../webcomponentsjs/webcomponents.js"></script>
+    <link rel="import" href="../shared/polyfills.html">
     <script src="../../../web-component-tester/browser.js"></script>
 
     <!-- Step 1: import the element to test -->
@@ -30,6 +32,11 @@
 
     <script>
 describe('dom-bind-notifier, when stamped from `dom-bind` bound to shallow object', function() {
+  before(function waitForHTMLImportsAndDomBindChange(done){
+    setTimeout(function(){
+      done();
+    });
+  });
 
   describe('should observe changes to it,', function(){
     it('fire a change event, and update dom-bind', function (done) {
@@ -37,6 +44,7 @@ describe('dom-bind-notifier, when stamped from `dom-bind` bound to shallow objec
       model.name = "Polymer";
       // check the event
       // wait for Object.observe callback
+      console.warn(document);
       var notifier = document.querySelector("dom-bind-notifier");
       notifier.addEventListener("change", function listener(event){
         notifier.removeEventListener("change", listener);
