@@ -1,0 +1,56 @@
+
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+
+    <script src="https://cdn.jsdelivr.net/fast-json-patch/0.5.6/json-patch.min.js"></script>
+    <!-- Importing Web Component's Polyfill -->
+    <script src="../../../webcomponentsjs/webcomponents.js"></script>
+    <link rel="import" href="../../shared/polyfills.html">
+    <!-- <script src="../../../web-component-tester/browser.js"></script> -->
+
+    <!-- Step 1: import the element to test -->
+    <link rel="import" href="http://polygit.org/*+juicy+:master/components/imported-template/imported-template.html">
+    <link rel="import" href="../../dom-bind-notifier.html">
+</head>
+<body>
+
+    <template is="dom-bind" id="root">
+        <template is="dom-repeat" items="{{model.MyArray}}">
+            <template is="imported-template" model="{{item}}" content$="{{item.Html}}"></template>
+        </template>
+        <dom-bind-notifier observed-object="{{model}}" path="model" deep></dom-bind-notifier>
+    </template>
+    <button id="step2">2. adding an item to MyArray (place 0)</button>
+    <button id="step4">4. Pressing another button trigger another patch</button>
+    <script>
+        var model = {
+            MyArray: [
+            ]
+        };
+        console.log("1. At start the MyArray is empty", model.MyArray);
+        var domBind = document.getElementById("root");
+        domBind.model = model;
+
+        document.getElementById('step2').addEventListener('click', function(){
+            jsonpatch.apply(model, [{op: 'add', path: '/MyArray/-', value: {Html: "./partials/0.html", text: 'new item\'s HTML'}}]);
+            console.log("2. I press a button somewhere else triggering a patch adding an item to MyArray (place 0)", model.MyArray);
+        });
+        document.getElementById('step4').addEventListener('click', function(){
+            console.log("4. Pressing another button trigger another patch, that is recieved in THIS ORDER:");
+            console.log("4.1 Adding another item to MyArray (place 1)");
+            jsonpatch.apply(model, [{op: 'add', path: '/MyArray/-', value: {Html: "./partials/1.html", text: 'second item\'s HTML'}}]);
+            console.log("4.2 Removing first item (place 0) from MyArray");
+            jsonpatch.apply(model, [{op: 'remove', path: '/MyArray/0'}]);
+
+            console.log("5. So now I expect the first item to dissapear and the second one to be displayed.")
+        });
+
+    </script>
+
+    <script>
+
+  </body>
+</html>

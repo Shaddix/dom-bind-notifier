@@ -1,0 +1,10 @@
+<template>
+    <template is="dom-bind">
+        <fieldset>
+            <h1><code>./partials/1.html</code></h1>
+            <p>{{model.text}}</p>
+            <!-- <script>console.log("3. The new item:s Html is displayed just as planned.")</script> -->
+        </fieldset>
+        <dom-bind-notifier observed-object="{{model}}" path="model" deep></dom-bind-notifier>
+    </template>
+</template>
