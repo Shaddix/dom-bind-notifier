@@ -160,7 +160,6 @@ describe('dom-bind-notifier, when stamped from `dom-bind` with deep attribute an
           notifier.removeEventListener("change", listener);
           // wait for asynchronous Polymer's _notifySplice
           setTimeout(function(){
-            debugger
               expect( event.type ).to.equal("change"); // It's kinda stupid, isn't it?
               expect( document.querySelector("ul.primitive_people>li>span").innerHTML ).to.equal("Homo erectus");
               done();

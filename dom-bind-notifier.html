@@ -134,7 +134,15 @@ Description: Adds good old Object.observe to Polymer 1.0 template binding (dom-b
         switch(change.type){
           // TODO: add support for changes to array propertires add, update, delete
           case "splice":
-            this.template._notifySplice(change.object, this.path + getPath(this.observedObject, change.object), change.index, change.addedCount, change.removed);
+            this.template.notifySplices(
+              this.path + getPath(this.observedObject, change.object),
+              [{
+                object: change.object,
+                type: 'splice',
+                index: change.index,
+                addedCount: change.addedCount,
+                removed: change.removed
+              }]);
             // observe new nodes
             if( this.deep ){
               for( addedCount = 0; addedCount < change.addedCount; addedCount++){
@@ -149,7 +157,16 @@ Description: Adds good old Object.observe to Polymer 1.0 template binding (dom-b
             if(!isNormalInteger(change.name)){ // array property
                 notifyTemplate(this, change);
             } else { // if array item
-            this.template._notifySplice(change.object, this.path + getPath(this.observedObject, change.object), parseInt(change.name), 1, [change.oldValue]);
+              this.template.notifySplices(
+                this.path + getPath(this.observedObject, change.object),
+                [{
+                  object: change.object,
+                  type: 'splice',
+                  index: parseInt(change.name),
+                  addedCount: 1,
+                  removed: [change.oldValue]
+                }]
+              );
             }
             // observe new nodes
             if( this.deep ){
@@ -267,50 +284,8 @@ Description: Adds good old Object.observe to Polymer 1.0 template binding (dom-b
    * @param  {Object} change  change in Object.observe format
    */
   function notifyTemplate(element, change){
-    var path = translatePathForPolymerNotifyPath( // required for seems-to-be Polymer bug
-        element.path + getPath(element.observedObject, change.object) + '.' + change.name,
-        element.template,
-        change.oldValue
-      );
+    var path = element.path + getPath(element.observedObject, change.object) + '.' + change.name;
     element.template.notifyPath(path, change.object[change.name]);
-  }
-  /**
-   * Workaround for lack of consistency in Polymer's API
-   * Polymer.Base#notifyPath accept different "path" than other methods
-   * for notifyPath path shouls use Collection keys instead of array indexes
-   *
-   * This function translate JSON path into Polymer's internal path
-   *
-   * @param  {String} path dot separated JSON path to translate
-   * @param  {Object} prop object in question
-   * @param  {any} [oldValue] old value for updates of last array item
-   * @return {String}      translated path
-   */
-  function translatePathForPolymerNotifyPath(path, prop, oldValue){
-    var array;
-    var parts = path.split('.');
-    var last = parts[parts.length-1];
-    if (parts.length > 1) {
-      for (var i=0; i<parts.length-1; i++) {
-        var part = parts[i];
-        prop = prop[part];
-        if (array && (parseInt(part) == part)) {
-          parts[i] = Polymer.Collection.get(array).getKey(prop);
-        }
-        if (!prop) {
-          return;
-        }
-        array = _isArray(prop) ? prop : null;
-      }
-      if (array && (parseInt(last) == last)) {
-        var coll = Polymer.Collection.get(array);
-        var old = prop[last];
-        var key = coll.getKey(oldValue);
-        parts[i] = key;
-      }
-      //prop[last] = value;
-    }
-    return parts.join('.');
   }
 
   function isNormalInteger(str) {
