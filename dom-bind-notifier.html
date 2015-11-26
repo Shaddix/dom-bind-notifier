@@ -9,6 +9,14 @@ Description: Adds good old Object.observe to Polymer 1.0 template binding (dom-b
 
 <dom-module id="dom-bind-notifier">
 
+<template strip-whitespace>
+	<style>
+		:host {
+			display: none;
+		}
+	</style>
+</template>
+
 <script type="text/javascript">(function() {
   Polymer({
     is: 'dom-bind-notifier',
