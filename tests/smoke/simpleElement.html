@@ -1,0 +1,57 @@
+
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+
+    <!-- Importing Web Component's Polyfill -->
+    <script src="../../../webcomponentsjs/webcomponents.js"></script>
+    <link rel="import" href="../shared/polyfills.html">
+    <script src="../../../web-component-tester/browser.js"></script>
+
+    <!-- Step 1: import the element to test -->
+    <link rel="import" href="../../dom-bind-notifier.html">
+    <link rel="import" href="welcome-element.html">
+
+  </head>
+  <body>
+    <welcome-element id="welcome"></welcome-element>
+    <script>
+    var model = {
+      name: "Juicy"
+    };
+</script>
+    <script>
+
+describe('dom-bind-notifier, used within an element', function() {
+  before(function waitForHTMLImportsAndDomBindChange(done){
+    var domBind = document.getElementById("welcome");
+    domBind.model = model;
+    setTimeout(function(){
+      done();
+    });
+  });
+
+  describe('should observe changes to it,', function(){
+    it('fire a change event, and update dom-bind', function (done) {
+      // change model
+      model.name = "Polymer";
+      // check the event
+      // wait for Object.observe callback
+      console.warn(document);
+      var notifier = document.querySelector("dom-bind-notifier");
+      notifier.addEventListener("change", function listener(event){
+        notifier.removeEventListener("change", listener);
+        expect( event.type ).to.equal("change"); // It's kinda stupid, isn't it?
+        expect( document.querySelector("h4>span").innerHTML ).to.equal("Polymer");
+        done();
+      });
+
+    });
+  });
+});
+    </script>
+
+  </body>
+</html>

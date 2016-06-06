@@ -1,0 +1,13 @@
+<link rel="import" href="../../../polymer/polymer.html">
+
+<dom-module id="welcome-element">
+    <template>
+      <h4>Welcome to <span>{{model.name}}</span>!</h4>
+      <dom-bind-notifier observed-object="{{model}}" ref="simple" path="model"></dom-bind-notifier>
+    </template>
+</dom-module>
+<script>
+    Polymer({
+        is: 'welcome-element'
+    });
+</script>

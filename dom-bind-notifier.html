@@ -293,7 +293,15 @@ Description: Adds good old Object.observe to Polymer 1.0 template binding (dom-b
    */
   function notifyTemplate(element, change){
     var path = element.path + getPath(element.observedObject, change.object) + '.' + change.name;
-    element.template.notifyPath(path, change.object[change.name]);
+	if (element.template == undefined) 
+	{
+		//supports using inside polymer element
+		element.parentNode.notifyPath(path, change.object[change.name]);
+	} 
+	else 
+	{
+		element.template.notifyPath(path, change.object[change.name]);
+	}
   }
 
   function isNormalInteger(str) {
