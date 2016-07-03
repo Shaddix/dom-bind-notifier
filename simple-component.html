@@ -2,7 +2,7 @@
 <dom-module id="simple-component">
   <template>
     <h4>ToDo list for {{name}}:</h4>
-    <button title="ChangeName" on-tap="ChangeName"/>
+    <button title="ChangeName" on-tap="{{ChangeName}"/}>
 	<dom-bind-notifier observed-object="{{model}}" path="model" deep></dom-bind-notifier>
   </template>
 </dom-module>
@@ -16,7 +16,7 @@ Polymer({
     ]
   },
   ChangeName: function(e) {
-    e.model.name = e.model.name + "_1";
+    this.model.name = this.model.name + "_1";
   },
 });
 </script>
