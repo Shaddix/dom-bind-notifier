@@ -1,7 +1,7 @@
 <link rel="import" href="../polymer/polymer.html">
 <dom-module id="simple-component">
   <template>
-    <h4>ToDo list for {{name}}:</h4>
+    <h4>ToDo list for {{model.name}}:</h4>
     <button title="ChangeName" on-tap="{{ChangeName}"/}>
 	<dom-bind-notifier observed-object="{{model}}" path="model" deep></dom-bind-notifier>
   </template>
