@@ -6,12 +6,14 @@
     <link rel="stylesheet" href="http://juicy.github.io/github-markdown-css/github-markdown.css">
 
     <!-- Importing Web Component's Polyfill -->
-    <script src="../webcomponentsjs/webcomponents.js"></script>
+    <script src="../bower_components/webcomponentsjs/webcomponents.js"></script>
     <!-- Importing Object.observe's Polyfill -->
-    <script src="../object.observe/dist/object-observe.js"></script>
+    <script src="../bower_components/object.observe/dist/object-observe.js"></script>
     <!-- Importing Array.observe's Polyfill -->
-    <script src="../array.observe/array-observe.js"></script>
+    <script src="../bower_components/array.observe/array-observe.js"></script>
 
+    <link rel="import" href="../bower_components/polymer/polymer.html">
+    
     <!-- Importing Custom Elements -->
     <link rel="import" href="dom-bind-notifier.html">
 	
@@ -26,10 +28,7 @@
 <body class="markdown-body">
   <h1>
     &lt;dom-bind-notifier&gt;
-    <iframe src="http://ghbtns.com/github-btn.html?user=juicy&repo=dom-bind-notifier&type=watch&count=true&size=medium"
-    allowtransparency="true" frameborder="0" scrolling="0" width="90" height="20"></iframe>
-    <iframe src="http://ghbtns.com/github-btn.html?user=juicy&repo=dom-bind-notifier&type=fork&count=true&size=medium"
-    allowtransparency="true" frameborder="0" scrolling="0" width="90" height="20"></iframe></h1>
+  </h1>
   <blockquote>
     <p>
       Adds good old Object.observe to Polymer 1.5 template binding (dom-bind)
