@@ -1,0 +1,22 @@
+<link rel="import" href="../polymer/polymer.html">
+<dom-module id="simple-component">
+  <template>
+    <h4>ToDo list for {{name}}:</h4>
+    <button title="ChangeName" on-tap="ChangeName"/>
+	<dom-bind-notifier observed-object="{{model}}" path="model" deep></dom-bind-notifier>
+  </template>
+</dom-module>
+<script>
+Polymer({
+  is: 'simple-component',
+  name: 'Artur',
+  model: {
+    items: [
+      {title: '1'}
+    ]
+  },
+  ChangeName: function() {
+    this.model.name = this.model.name + "_1";
+  },
+});
+</script>
