@@ -12,7 +12,10 @@
 <script>
 Polymer({
   is: 'simple-component',
-  user: 'Artur',
+  properties: {
+    user: 'Artur',
+    model: {}
+  }, 
   model: {
     user: 'Artur',
     items: [
