@@ -17,7 +17,7 @@
     <!-- Importing Custom Elements -->
     <link rel="import" href="dom-bind-notifier.html">
 	
-    <link rel="import" href="simple.html">
+    <link rel="import" href="simple-component.html">
     <style>
       body.markdown-body{ overflow: auto; }
       .example-block{ display: flex; flex-wrap: wrap; justify-content: center; }
@@ -47,10 +47,10 @@
     <pre><code>asd
 </code></pre>
     <div class="example">
-     <simple-component />
+     <simple-component id="simple"></simple-component>
     </div>
     <div>
-      <button onclick="simple.name='juicy-dom-notifier'">Click me to change <code>simple.name</code> to <code>"juicy-dom-notifier"</code></button>
+      <button onclick="document.getElementById('simple').model.name='New Name'">Modify externally</button>
     </div>
   </div>
   
