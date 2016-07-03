@@ -1,24 +1,22 @@
-<link rel="import" href="../polymer/polymer.html">
+﻿<link rel="import" href="../polymer/polymer.html">
 <!-- Importing Custom Elements -->
 <link rel="import" href="dom-bind-notifier.html">
-    
+
 <dom-module id="simple-component">
   <template>
-    <h4>ToDo list for {{user}}:</h4>
-    <button title="ChangeName" on-tap="ChangeName"/>
-	
+    <h4>ToDo list for {{model.user}}:</h4>
+    <button on-tap="ChangeName" >Change Name</button>
+	<dom-bind-notifier path="model" observed-object="{{model}}"></dom-bind-notifier>
   </template>
 </dom-module>
 <script>
 Polymer({
   is: 'simple-component',
-  properties: {
-    user: 'Artur',
-    model: {}
-  }, 
-  
-  ChangeName: function(e) {
-    this.model.name = this.model.name + "_1";
+  ready: function() {
+	this.model = {user: 'Artur'};
   },
+  ChangeName: function() {
+	this.model.user = this.model.user + "_1";
+  }
 });
 </script>
