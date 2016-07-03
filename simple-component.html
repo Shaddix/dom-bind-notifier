@@ -4,7 +4,7 @@
     
 <dom-module id="simple-component">
   <template>
-    <h4>ToDo list for {{name}}:</h4>
+    <h4>ToDo list for {{user}}:</h4>
     <button title="ChangeName" on-tap="ChangeName"/>
 	
   </template>
@@ -12,9 +12,9 @@
 <script>
 Polymer({
   is: 'simple-component',
-  name: 'Artur',
+  user: 'Artur',
   model: {
-    name: 'Artur',
+    user: 'Artur',
     items: [
       {title: '1'}
     ]
